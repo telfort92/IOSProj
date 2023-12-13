@@ -10,7 +10,7 @@ import SwiftUI
 struct RecipesListView: View {
     @EnvironmentObject private var recipeData: RecipeData
     let category: MainInformation.Category
-    
+
     @State private var isPresenting = false
     @State private var newRecipe = Recipe()
 
@@ -18,19 +18,19 @@ struct RecipesListView: View {
     private let listTextColor = AppColor.foreground
     
     var body: some View {
-        NavigationView{
-            List {
-                ForEach(recipes) { recipe in
-                    NavigationLink(recipe.mainInformation.name, destination: RecipeDetailView(recipe: recipe))
-                }
-                .listRowBackground(listBackgroundColor)
-                .foregroundColor(listTextColor)
+        List {
+            ForEach(recipes) { recipe in
+                NavigationLink(recipe.mainInformation.name, destination: RecipeDetailView(recipe: recipe))
             }
+            .listRowBackground(listBackgroundColor)
+            .foregroundColor(listTextColor)
         }
         .navigationTitle(navigationTitle)
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
+                    newRecipe = Recipe()
+                    newRecipe.mainInformation.category = recipes[0].mainInformation.category
                     isPresenting = true
                 }, label: {
                     Image(systemName: "plus")
@@ -42,9 +42,9 @@ struct RecipesListView: View {
                 ModifyRecipeView(recipe: $newRecipe)
                     .toolbar(content: {
                         ToolbarItem(placement: .cancellationAction) {
-                          Button("Dismiss") {
-                            isPresenting = false
-                          }
+                            Button("Dismiss") {
+                                isPresenting = false
+                            }
                         }
                         ToolbarItem(placement: .confirmationAction) {
                             if newRecipe.isValid {
@@ -54,8 +54,8 @@ struct RecipesListView: View {
                                 }
                             }
                         }
-                      })
-                    .navigationTitle("Add new recipe")
+                    })
+                    .navigationTitle("Add a New Recipe")
             }
         })
     }

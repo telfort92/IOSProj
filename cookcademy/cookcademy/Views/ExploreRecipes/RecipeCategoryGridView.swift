@@ -49,4 +49,3 @@ struct RecipeCategoryGridView_Previews: PreviewProvider {
         RecipeCategoryGridView()
     }
 }
-

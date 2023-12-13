@@ -14,29 +14,28 @@ struct Recipe: Identifiable {
     var ingredients: [Ingredient]
     var directions: [Direction]
     
+    init() {
+        self.init(mainInformation: MainInformation(name: "", description: "", author: "", category: .breakfast),
+                  ingredients: [],
+                  directions: [])
+    }
+    
     init(mainInformation: MainInformation, ingredients:[Ingredient], directions:[Direction]) {
         self.mainInformation = mainInformation
         self.ingredients = ingredients
         self.directions = directions
     }
-    
-    init() {
-        self.init(mainInformation: MainInformation(name: "", description: "", author: "", category: .breakfast),
-                  ingredients: [],
-                  directions: [])
-      }
-    
+
     var isValid: Bool {
         mainInformation.isValid && !ingredients.isEmpty && !directions.isEmpty
     }
 }
 
-
 struct MainInformation {
     var name: String
     var description: String
     var author: String
-    var category: Category // Breakfast, Lunch, Dinner, Dessert
+    var category: Category
     
     enum Category: String, CaseIterable {
         case breakfast = "Breakfast"
@@ -50,23 +49,47 @@ struct MainInformation {
     }
 }
 
-struct Ingredient {
+struct Direction: RecipeComponent {
+    var description: String
+    var isOptional: Bool
+    
+    init(description: String, isOptional: Bool) {
+        self.description = description
+        self.isOptional = isOptional
+    }
+    
+    init() {
+        self.init(description: "", isOptional: false)
+    }
+}
+
+struct Ingredient: RecipeComponent {
     var name: String
     var quantity: Double
-    var unit: Unit // Ounces, Grams, Cups, Tablespoons, Teaspoons, None
+    var unit: Unit
+    
+    init(name: String, quantity: Double, unit: Unit) {
+        self.name = name
+        self.quantity = quantity
+        self.unit = unit
+    }
+    
+    init() {
+        self.init(name: "", quantity: 1.0, unit: .none)
+    }
     
     var description: String {
         let formattedQuantity = String(format: "%g", quantity)
         switch unit {
-            case .none:
-                let formattedName = quantity == 1 ? name : "(\name)s"
-                return "\(formattedQuantity) \(formattedName)"
-            default:
-                if quantity == 1 {
-                    return "1 \(unit.singularName) \(name)"
-                } else {
-                    return "\(formattedQuantity) \(unit.rawValue) \(name)"
-                }
+        case .none:
+            let formattedName = quantity == 1 ? name : "\(name)s"
+            return "\(formattedQuantity) \(formattedName)"
+        default:
+            if quantity == 1 {
+                return "1 \(unit.singularName) \(name)"
+            } else {
+                return "\(formattedQuantity) \(unit.rawValue) \(name) "
+            }
         }
     }
     
@@ -78,11 +101,6 @@ struct Ingredient {
         case tsp = "Teaspoons"
         case none = "No units"
         
-        var singularName: String{ String(rawValue.dropLast())}
+        var singularName: String { String(rawValue.dropLast()) }
     }
-}
-
-struct Direction {
-    var description: String
-    var isOptional: Bool
 }

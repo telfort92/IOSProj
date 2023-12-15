@@ -51,12 +51,18 @@ struct ModifyComponentsView<Component: RecipeComponent, DestinationView: ModifyC
                         .font(.title)
                         .padding()
                     Spacer()
+                    EditButton()
+                        .padding()
                 }
                 List {
                     ForEach(components.indices, id: \.self) { index in
                         let component = components[index]
-                        Text(component.description)
+                        let editComponentView = DestinationView(component: $components[index]) { _ in return }
+                            .navigationTitle("Edit \(Component.singularName().capitalized)")
+                        NavigationLink(component.description, destination: editComponentView)
                     }
+                    .onDelete { components.remove(atOffsets: $0) }
+                    .onMove { indices, newOffet in components.move(fromOffsets: indices, toOffset: newOffet) }
                     .listRowBackground(listBackgroundColor)
                     NavigationLink("Add another \(Component.singularName())",
                                    destination: addComponentView)
@@ -68,12 +74,15 @@ struct ModifyComponentsView<Component: RecipeComponent, DestinationView: ModifyC
     }
 }
 
-struct ModifyIngredientsView_Previews: PreviewProvider {
-  @State static var recipe = Recipe.testRecipes[1]
-  @State static var emptyIngredients = [Ingredient]()
-  static var previews: some View {
-    NavigationView {
-      ModifyComponentsView<Ingredient, ModifyIngredientView>(components: $recipe.ingredients)
+struct ModifyComponentsView_Previews: PreviewProvider {
+    @State static var recipe = Recipe.testRecipes[1]
+    @State static var emptyIngredients = [Ingredient]()
+    static var previews: some View {
+        NavigationView {
+            ModifyComponentsView<Ingredient, ModifyIngredientView>(components: $recipe.ingredients)
+        }
+        NavigationView {
+            ModifyComponentsView<Ingredient, ModifyIngredientView>(components: $emptyIngredients)
+        }
     }
-  }
 }

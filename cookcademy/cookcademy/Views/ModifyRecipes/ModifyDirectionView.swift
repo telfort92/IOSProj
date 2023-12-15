@@ -20,7 +20,7 @@ struct ModifyDirectionView: ModifyComponentView {
     private let listTextColor = AppColor.foreground
 
     @Environment(\.presentationMode) private var mode
-    
+
     var body: some View {
         Form {
             TextField("Direction Description", text: $direction.description)
@@ -41,10 +41,13 @@ struct ModifyDirectionView: ModifyComponentView {
 }
 
 struct ModifyDirectionView_Previews: PreviewProvider {
-  @State static var emptyDirection = Direction(description: "", isOptional: false)
-  static var previews: some View {
-    NavigationView {
-      ModifyDirectionView(component: $emptyDirection) { _ in return }
+    @State static var recipe = Recipe.testRecipes[0]
+
+    static var previews: some View {
+        NavigationView {
+            ModifyDirectionView(component: $recipe.directions[0]) { direction in
+                print(direction)
+            }
+        }
     }
-  }
 }

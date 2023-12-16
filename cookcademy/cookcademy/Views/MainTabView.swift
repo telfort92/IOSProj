@@ -24,6 +24,8 @@ struct MainTabView: View {
       NavigationView {
         RecipesListView(viewStyle: .favorites)
       }.tabItem { Label("Favorites", systemImage: "heart.fill") }
+        SettingsView()
+            .tabItem{ Label("Setting", systemImage: "gear")}
     }
     .environmentObject(recipeData)
   }

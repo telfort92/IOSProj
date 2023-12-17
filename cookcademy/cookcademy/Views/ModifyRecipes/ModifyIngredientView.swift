@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ModifyIngredientView: ModifyComponentView {
     @Binding var ingredient: Ingredient
+    
     let createAction: ((Ingredient) -> Void)
     
     init(component: Binding<Ingredient>, createAction: @escaping (Ingredient) -> Void) {
@@ -20,6 +21,7 @@ struct ModifyIngredientView: ModifyComponentView {
     @AppStorage("listTextColor") private var listTextColor = AppColor.foreground
     
     @Environment(\.presentationMode) private var mode
+    @EnvironmentObject private var recipeData: RecipeData
 
     var body: some View {
         Form {

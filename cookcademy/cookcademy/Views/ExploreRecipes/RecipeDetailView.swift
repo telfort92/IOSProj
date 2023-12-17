@@ -9,12 +9,13 @@ import SwiftUI
 
 struct RecipeDetailView: View {
     @Binding var recipe: Recipe
-    
-    @AppStorage("hideOptionalSteps") private var hideOptionalSteps: Bool = false
+
     @AppStorage("listBackgroundColor") private var listBackgroundColor = AppColor.background
     @AppStorage("listTextColor") private var listTextColor = AppColor.foreground
-
+    
+    @AppStorage("hideOptionalDirections") private var hideOptionalDirections: Bool = false
     @State private var isPresenting = false
+    @EnvironmentObject private var recipeData: RecipeData
 
     var body: some View {
         VStack {
@@ -41,12 +42,11 @@ struct RecipeDetailView: View {
                 Section(header: Text("Directions")) {
                     ForEach(recipe.directions.indices, id: \.self) { index in
                         let direction = recipe.directions[index]
-                        if direction.isOptional && hideOptionalSteps {
+                        if direction.isOptional && hideOptionalDirections {
                             EmptyView()
-                        }
-                        else{
+                        } else {
                             HStack {
-                                let index = recipe.index(of: direction, excludingOptionalDirections: hideOptionalSteps) ?? 0
+                                let index = recipe.index(of: direction, excludingOptionalDirections: hideOptionalDirections) ?? 0
                                 Text("\(index + 1). ").bold()
                                 Text("\(direction.isOptional ? "(Optional) " : "")\(direction.description)")
                             }.foregroundColor(listTextColor)
@@ -64,8 +64,8 @@ struct RecipeDetailView: View {
                     }
                     Button(action: {
                         recipe.isFavorite.toggle()
-                    }){
-                        Image(systemName: recipe.isFavorite ? "heart.fill": "heart")
+                    }) {
+                        Image(systemName: recipe.isFavorite ? "heart.fill" : "heart")
                     }
                 }
             }
@@ -82,6 +82,9 @@ struct RecipeDetailView: View {
                         }
                     }
                     .navigationTitle("Edit Recipe")
+            }
+            .onDisappear {
+                recipeData.saveRecipes()
             }
         }
     }

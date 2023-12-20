@@ -11,7 +11,8 @@ import Foundation
  Retrieving random user data from api
  */
 struct UserFetchingClient {
-    static private let url = URL(string: "https://randomuser.me/api/?results=10&format=pretty")!
+    //fetch 20 random users instead of 10 for testing
+    static private let url = URL(string: "https://randomuser.me/api/?results=20&format=pretty")!
     
     static func getUsers() async throws -> [User] {
         async let (data, _) = URLSession.shared.data(from: url)

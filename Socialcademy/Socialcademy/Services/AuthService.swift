@@ -16,7 +16,7 @@ class AuthService: ObservableObject {
     
     init() {
         listener = auth.addStateDidChangeListener { [weak self] _, user in
-            self?.user = user.map(User.init(from:))
+            self?.user = user.map { User(from: $0) }
         }
     }
     
